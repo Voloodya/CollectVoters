@@ -1,0 +1,279 @@
+﻿@model IEnumerable<CollectVoters.Models.Friend>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="buttonsright">
+    <p>
+        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Выйти</a>
+    </p>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p><font size="4" color="black" face="Arial">@User.Identity.Name</font></p>
+    <p id="numberRecords"><font size="4" color="black" face="Arial"></font></p>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Вход</a>
+    <a asp-controller="Account" asp-action="Register">Регистрация</a>
+}
+<style>
+    #buttonsright input {
+        font-size: 12px;
+        padding: 4px 2px;
+        border: solid 1px burlywood;
+        width: 100%;
+        margin: 2px 0 20px;
+        border-radius: 5px;
+        display: block;
+    }
+
+    #friendTable {
+        counter-reset: rowNumber;
+        font-size: 14px;
+    }
+
+        #friendTable thead {
+            background: Gainsboro;
+            word-wrap: break-word; 
+/*            word-break: break-all;
+*/        }
+
+        #friendTable tbody tr {
+           counter-increment: rowNumber;
+           font-size: 14px;
+       }
+
+       #friendTable tr td:first-child::before {
+           content: counter(rowNumber);
+           min-width: 1em;
+           margin-right: 0.5em;
+           font-size: 14px;
+       }
+
+</style>
+
+
+<h2>Избиратели</h2>
+<p>
+    <a asp-action="Create" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Добавить избирателя</a>
+</p>
+<table class="table" id="friendTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.FamilyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PatronymicName)
+            </th>
+            <th style="display:none">
+                @Html.DisplayNameFor(model => model.DateBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PollingStation)
+            </th>
+            <th style="display:none">
+                @Html.DisplayNameFor(model => model.District)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.House)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apartment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Organization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FieldActivity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumberResponsible)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateRegistrationSite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VotingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Voter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th style="display:none">
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td align="center"></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FamilyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PatronymicName)
+            </td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.DateBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PollingStation.Name)
+            </td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.District.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.House)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apartment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telephone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FieldActivity.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberResponsible)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateRegistrationSite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VotingDate)
+            </td>
+            <td id="voterCheck">
+                @Html.DisplayFor(modelItem => item.Voter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdFriend"><i class="far fa-trash-alt"></i>Изменить</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdFriend" class="text-danger ml-1" onclick="return confirm('Вы уверены, что хотите удалить запись?')"><span class="fa fa-trash-alt fa-lg"></span>Удалить</a>
+            </td>
+        </tr>
+        }    
+    </tbody>
+</table>
+<table class="table" id="resultTable">
+    <tbody>
+        <tr>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td style="display:none">
+            </td>
+            <td>
+            </td>
+            <td style="display:none">
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                <font size="3" color="black" b face="Arial"><b>Итого проголосовавших:</b></font>
+            </td>
+            <td id="totalVoter">
+            </td>
+            <td>
+                <font size="3" color="black" b face="Arial"><b>Всего избирателей:</b></font>
+            </td>
+            <td align="center">
+                <font size="3" color="black" b face="Arial">@Model.Count()</font>
+            </td>
+            <td style="display:none">
+            </td>
+            <td align="center">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<environment include="Development">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</environment>
+
+<script>
+    //<!-- Определяем количество строк в tbody таблица-->
+    //var tableSize = $('#friendTable tbody tr').length;
+    //var tableSize = $("#friendTable").find("tbody").find("tr").length;
+    //$('#numberRecords').html(tableSize);
+    let nrows = document.getElementById('friendTable').tBodies[0].rows.length;
+    document.getElementById('numberRecords').innerHTML = "Количество избирателей: " + (nrows);
+
+    $('friendTable').ready(function countVoters() {
+        var table = document.getElementById('friendTable');
+        var rows = table.rows;
+        var total = 0;
+        // Assume first row is headers, adjust as required
+        // Assume last row is footer, addjust as required
+        for (var i = 1, iLen = rows.length - 1; i < iLen; i++) {
+            var checked_ = table.rows[i].cells[17].getElementsByTagName('input')[0].checked;
+            if (checked_ == true) {
+                total += 1;
+            }
+        }
+        document.getElementById('totalVoter').innerHTML = total.toFixed(0);
+    })
+    //function cellCounter() {
+    //    //Берем 1-ую на странице table, ...
+    //    var trSize = document.getElementsByTagName('table').item(0).getElementsByTagName('tbody').getElementsByTagName('tr').length;
+    //}
+    //window.onload = cellCounter;
+</script>
+

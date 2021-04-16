@@ -1,0 +1,199 @@
+﻿@model IEnumerable<CollectVoters.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    #usersTable {
+        counter-reset: rowNumber;        
+    }
+
+        #usersTable thead {
+            background: Gainsboro;
+            word-wrap: break-word;
+            /*          word-break: break-all;*/
+            font-size: 15px;
+        }
+
+        #usersTable tbody tr {
+            counter-increment: rowNumber;
+            font-size: 14px;
+        }
+
+        #usersTable tr td:first-child::before {
+            content: counter(rowNumber);
+            min-width: 1em;
+            margin-right: 0.5em;
+            font-size: 14px;
+        }
+</style>
+
+<div id="buttonsright">
+    <p>
+        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Выйти</a>
+    </p>
+</div>
+
+<p>
+    <a asp-controller="Admin" asp-action="Index">Избиратели</a>
+</p>
+
+<h2>Пользователи</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Добавить пользователя</a>
+</p>
+
+
+<table class="table" id="usersTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FamilyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PatronymicName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.numberFriends)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody style="font-size:14px">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td align="center"></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FamilyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PatronymicName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telephone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role.Name)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.numberFriends)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdUser"><i class="far fa-trash-alt"></i>Изменить</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdUser" class="text-danger ml-1" onclick="return confirm('Вы уверены, что хотите удалить запись?')"><span class="fa fa-trash-alt fa-lg"></span>Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<table class="table" id="resultTable">
+    <tbody>
+        <tr>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td align="left">
+                <font size="3" color="black" b face="Arial"><b>Всего зарегистрированных избирателей:</b></font>
+            </td>
+            <td>
+            </td>
+            <td id="totalValue" align="center">
+            </td>
+            <td>
+            </td>
+        </tr>        
+    </tbody>
+</table>
+<div class="form-row">
+    @*<div class="form-group col-md-3">
+        <input value="Подсчитать общее кол-во" class="btn btn-primary btn-block" onclick="countVoters('usersTable', 9, 'totalValue')" />
+    </div>*@
+</div>
+<!--<button onclick="countVoters('usersTable', 8, 'totalValue')">Update total</button>-->
+
+<environment include="Development">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</environment>
+
+<script>
+    // column is the column with values in it to total (first column is zero)
+    // Assume values are floats.
+    //Работает
+    //function countVoters(tableId, column, resultId) {
+
+    //    var table = document.getElementById(tableId);
+    //    var rows = table.rows;
+    //    var total = 0;
+    //    var cell;
+    //    // Assume first row is headers, adjust as required
+    //    // Assume last row is footer, addjust as required
+    //    for (var i = 1, iLen = rows.length - 1; i < iLen; i++) {
+    //        cell = rows[i].cells[column];
+    //        total += Number(cell.textContent || cell.innerText);
+    //    }
+    //    //document.getElementById('friendTable').tBodies[0]
+    //    document.getElementById(resultId).innerHTML = total.toFixed(0);
+    //}
+
+    $('friendTable').ready(function countVoters() {
+
+        var tableId = 'usersTable';
+        var column = 9;
+        var resultId = 'totalValue';
+        var table = document.getElementById(tableId);
+        var rows = table.rows;
+        var total = 0;
+        var cell;
+        // Assume first row is headers, adjust as required
+        // Assume last row is footer, addjust as required
+        for (var i = 1, iLen = rows.length - 1; i < iLen; i++) {
+            cell = rows[i].cells[column];
+            total += Number(cell.textContent || cell.innerText);
+        }
+        //document.getElementById('friendTable').tBodies[0]
+        document.getElementById(resultId).innerHTML = total.toFixed(0);
+    })
+</script>
