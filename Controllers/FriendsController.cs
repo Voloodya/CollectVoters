@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using CollectVoters.DTO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Ical.Net.Interfaces.DataTypes;
 
 namespace CollectVoters.Controllers
 {
@@ -20,6 +21,7 @@ namespace CollectVoters.Controllers
     {
         private readonly ILogger<FriendsController> _logger;
         private readonly Db_usersContext _context;
+        private readonly IDateTime _dateTime;
 
         public FriendsController(Db_usersContext context, ILogger<FriendsController> logger)
         {

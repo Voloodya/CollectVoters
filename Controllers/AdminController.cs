@@ -198,11 +198,6 @@ namespace CollectVoters.Controllers
         {
             return Content("Вход только для администратора");
         }
-        //public IActionResult LogOff()
-        //{
-        //    HttpContext.SignOutAsync("Cookie");
-        //    return Redirect("/Home/Index");
-        //}
 
     }
 }

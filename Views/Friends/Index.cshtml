@@ -3,6 +3,42 @@
     ViewData["Title"] = "Index";
 }
 
+<style>
+        #buttonsright input {
+            font-size: 12px;
+            padding: 4px 2px;
+            border: solid 1px burlywood;
+            width: 100%;
+            margin: 2px 0 20px;
+            border-radius: 5px;
+            display: block;
+        }
+
+        #friendTable {
+            counter-reset: rowNumber;
+            font-size: 14px;
+        }
+
+            #friendTable thead {
+                background: Gainsboro;
+                word-wrap: break-word;
+                /*            word-break: break-all;
+    */
+            }
+
+            #friendTable tbody tr {
+                counter-increment: rowNumber;
+                font-size: 14px;
+            }
+
+            #friendTable tr td:first-child::before {
+                content: counter(rowNumber);
+                min-width: 1em;
+                margin-right: 0.5em;
+                font-size: 14px;
+            }
+</style>
+
 <div id="buttonsright">
     <p>
         <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Выйти</a>
@@ -19,51 +55,19 @@ else
     <a asp-controller="Account" asp-action="Login">Вход</a>
     <a asp-controller="Account" asp-action="Register">Регистрация</a>
 }
-<style>
-    #buttonsright input {
-        font-size: 12px;
-        padding: 4px 2px;
-        border: solid 1px burlywood;
-        width: 100%;
-        margin: 2px 0 20px;
-        border-radius: 5px;
-        display: block;
-    }
-
-    #friendTable {
-        counter-reset: rowNumber;
-        font-size: 14px;
-    }
-
-        #friendTable thead {
-            background: Gainsboro;
-            word-wrap: break-word; 
-/*            word-break: break-all;
-*/        }
-
-        #friendTable tbody tr {
-           counter-increment: rowNumber;
-           font-size: 14px;
-       }
-
-       #friendTable tr td:first-child::before {
-           content: counter(rowNumber);
-           min-width: 1em;
-           margin-right: 0.5em;
-           font-size: 14px;
-       }
-
-</style>
-
 
 <h2>Избиратели</h2>
 <p>
     <a asp-action="Create" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Добавить избирателя</a>
+    <a class="btn btn-outline-danger" onclick="deleteSelected('friendTable')"><i class="far fa-plus-square"></i>Удалить выбранных</a>
 </p>
 <table class="table" id="friendTable">
     <thead>
         <tr>
             <th></th>
+            <th style="display:none">
+                @Html.DisplayNameFor(model => model.IdFriend)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FamilyName)
             </th>
@@ -121,6 +125,9 @@ else
             <th style="display:none">
                 @Html.DisplayNameFor(model => model.User)
             </th>
+            <th>
+                Удалить
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -129,6 +136,9 @@ else
         {
         <tr>
             <td align="center"></td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.IdFriend)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FamilyName)
             </td>
@@ -185,6 +195,9 @@ else
             </td>
             <td style="display:none">
                 @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                <input type="checkbox">
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.IdFriend"><i class="far fa-trash-alt"></i>Изменить</a> |
@@ -256,20 +269,95 @@ else
     let nrows = document.getElementById('friendTable').tBodies[0].rows.length;
     document.getElementById('numberRecords').innerHTML = "Количество избирателей: " + (nrows);
 
-    $('friendTable').ready(function countVoters() {
+    $('friendTable').ready(countVoters());
+    $('friendTable').change(countVoters());
+
+    function countVoters() {
         var table = document.getElementById('friendTable');
         var rows = table.rows;
         var total = 0;
         // Assume first row is headers, adjust as required
         // Assume last row is footer, addjust as required
-        for (var i = 1, iLen = rows.length - 1; i < iLen; i++) {
-            var checked_ = table.rows[i].cells[17].getElementsByTagName('input')[0].checked;
+        for (var i = 1, iLen = rows.length - 1; i <= iLen; i++) {
+            var checked_ = table.rows[i].cells[18].getElementsByTagName('input')[0].checked;
             if (checked_ == true) {
                 total += 1;
             }
         }
         document.getElementById('totalVoter').innerHTML = total.toFixed(0);
-    })
+    }
+
+    function deleteSelected(idObject) {
+
+        var table = document.getElementById(idObject);
+        var rows = table.rows;
+        var jsonMasId = [];
+        // Assume first row is headers, adjust as required
+        // Assume last row is footer, addjust as required
+        for (let i = 1, iLen = rows.length-1; i <= iLen; i++) {
+            var checked_ = table.rows[i].cells[21].getElementsByTagName('input')[0].checked;
+            if (checked_ == true) {
+
+                var idFriend = table.rows[i].cells[1].innerHTML;
+                idFriend = idFriend.trim(); //Удаляем пробелы в начале и в конце
+                //var url_ = "http://localhost:48329/api/APIFriends/DeleteFriend/" + idFriend;
+
+                ////fetch(url_, {
+                ////    method: 'DELETE',
+                //////    body: JSON.stringify(data) // body data type must match "Content-Type" header
+                ////});
+                //$.ajax({
+                //    url: url_,
+                //    type: 'DELETE',
+                //    success: function (response) {
+                //        alert('Пользователи удалены');
+                //        console.log(response);
+                //    },
+                //    error: function (result, status, er) {
+                //        alert("error: " + result + " status: " + status + " er:" + er);
+                //    }
+                //});
+                jsonMasId.push(Number.parseInt(idFriend));
+            }
+        }
+        if (jsonMasId.length > 0) {
+            $.ajax({
+                url: 'http://localhost:48329/api/APIFriends/DeleteFriends/',
+                type: 'POST',
+                data: JSON.stringify(jsonMasId),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    console.log(response);
+                    deleteTrTableBpdy(idObject, jsonMasId);
+                    updatingFields();
+                },
+                error: function (result, status, er) {
+                    alert("error: " + result + " status: " + status + " er:" + er);
+                }
+            });
+        }
+    }
+
+    function deleteTrTableBpdy(idObject, jsonMasId) {
+
+        var table = document.getElementById(idObject);
+        var rows = table.rows;
+
+        for (let i = 1; i<=(rows.length - 1); i++) {
+
+            var idFriend = table.rows[i].cells[1].innerHTML;
+            if (jsonMasId.indexOf(Number.parseInt(idFriend)) != -1) {
+
+                table.rows[i].remove();
+                i--;
+            }
+        }
+    }
+
+    function updatingFields() {
+        let nrows = document.getElementById('friendTable').tBodies[0].rows.length;
+        document.getElementById('numberRecords').innerHTML = "Количество избирателей: " + (nrows);
+    }
     //function cellCounter() {
     //    //Берем 1-ую на странице table, ...
     //    var trSize = document.getElementsByTagName('table').item(0).getElementsByTagName('tbody').getElementsByTagName('tr').length;

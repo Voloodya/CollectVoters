@@ -54,11 +54,15 @@ else
 
 <p>
     <a asp-action="Create" class="btn btn-outline-success"><i class="far fa-plus-square"></i>Добавить избирателя</a>
+    <a class="btn btn-outline-danger" onclick="deleteSelected('friendTable')"><i class="far fa-plus-square"></i>Удалить выбранных</a>
 </p>
 <table class="table" id="friendTable">
     <thead>
         <tr>
             <th></th>
+            <th style="display:none">
+                @Html.DisplayNameFor(model => model.IdFriend)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FamilyName)
             </th>
@@ -114,7 +118,10 @@ else
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.User.UserName)
+            </th>
+            <th>
+                Удалить
             </th>
             <th></th>
         </tr>
@@ -122,70 +129,76 @@ else
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td align="center"></td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FamilyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PatronymicName)
-                </td>
-                <td style="display:none">
-                    @Html.DisplayFor(modelItem => item.DateBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PollingStation.Name)
-                </td>
-                <td style="display:none">
-                    @Html.DisplayFor(modelItem => item.District.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Street)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.House)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apartment)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Telephone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Organization)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FieldActivity.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumberResponsible)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateRegistrationSite)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VotingDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Voter)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.UserName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdFriend"><i class="fa fa-marker fa-lg"></i>Изменить</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdFriend" class="text-danger ml-1" onclick="return confirm('Вы уверены, что хотите удалить запись?')"><i class="fa fa-trash-alt fa-lg"></i>Удалить</a>
-                </td>
-            </tr>
+        <tr>
+            <td align="center"></td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.IdFriend)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FamilyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PatronymicName)
+            </td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.DateBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PollingStation.Name)
+            </td>
+            <td style="display:none">
+                @Html.DisplayFor(modelItem => item.District.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.House)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apartment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telephone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FieldActivity.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberResponsible)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateRegistrationSite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VotingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Voter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FamilyName)
+            </td>
+            <td>
+                <input type="checkbox">
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdFriend"><i class="fa fa-marker fa-lg"></i>Изменить</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdFriend" class="text-danger ml-1" onclick="return confirm('Вы уверены, что хотите удалить запись?')"><i class="fa fa-trash-alt fa-lg"></i>Удалить</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -251,24 +264,93 @@ else
     $('#numberRecords').html("Количество избирателей: " + (tableSize));
     //let nrows = document.getElementById('friendTable').tBodies[0].rows.length;
     //document.getElementById('numberRecords').innerHTML = "Количество избирателей: " + (nrows-1);
-    //function cellCounter() {
-    //    //Берем 1-ую на странице table, ...
-    //    var trSize = document.getElementsByTagName('table').item(0).getElementsByTagName('tbody').getElementsByTagName('tr').length;
-    //}
-    //window.onload = cellCounter;
 
-    $('friendTable').ready(function countVoters() {
+    $('friendTable').ready(countVoters());
+    $('friendTable').change(countVoters());
+
+    function countVoters() {
         var table = document.getElementById('friendTable');
         var rows = table.rows;
         var total = 0;
         // Assume first row is headers, adjust as required
         // Assume last row is footer, addjust as required
-        for (var i = 1, iLen = rows.length - 1; i < iLen; i++) {
-            var checked_ = table.rows[i].cells[17].getElementsByTagName('input')[0].checked;
+        for (var i = 1, iLen = rows.length - 1; i <= iLen; i++) {
+            var checked_ = table.rows[i].cells[18].getElementsByTagName('input')[0].checked;
             if (checked_ == true) {
                 total += 1;
             }
         }
         document.getElementById('totalVoter').innerHTML = total.toFixed(0);
-    })
+    }
+
+    function deleteSelected(idObject) {
+
+        var table = document.getElementById(idObject);
+        var rows = table.rows;
+        var jsonMasId = [];
+        // Assume first row is headers, adjust as required
+        // Assume last row is footer, addjust as required
+        for (let i = 1, iLen = rows.length - 1; i <= iLen; i++) {
+            var checked_ = table.rows[i].cells[21].getElementsByTagName('input')[0].checked;
+            if (checked_ == true) {
+
+                var idFriend = table.rows[i].cells[1].innerHTML;
+                idFriend = idFriend.trim(); //Удаляем пробелы в начале и в конце
+                //var url_ = "http://localhost:48329/api/APIFriends/DeleteFriend/" + idFriend;
+                ////fetch(url_, {
+                ////    method: 'DELETE',
+                //////    body: JSON.stringify(data) // body data type must match "Content-Type" header
+                ////});
+                //$.ajax({
+                //    url: url_,
+                //    type: 'DELETE',
+                //    success: function (response) {
+                //        alert('Пользователи удалены');
+                //        console.log(response);
+                //    },
+                //    error: function (result, status, er) {
+                //        alert("error: " + result + " status: " + status + " er:" + er);
+                //    }
+                //});
+                jsonMasId.push(Number.parseInt(idFriend));
+            }
+        }
+        if (jsonMasId.length>0) {
+            $.ajax({
+                url: 'http://localhost:48329/api/APIFriends/DeleteFriends/',
+                type: 'POST',
+                data: JSON.stringify(jsonMasId),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    console.log(response);
+                    deleteTrTableBpdy(idObject, jsonMasId);
+                    updatingFields();
+                },
+                error: function (result, status, er) {
+                    alert("error: " + result + " status: " + status + " er:" + er);
+                }
+            });
+        }
+    }
+
+    function deleteTrTableBpdy(idObject, jsonMasId) {
+
+        var table = document.getElementById(idObject);
+        var rows = table.rows;
+
+        for (let i = 1; i <= (rows.length - 1); i++) {
+
+            var idFriend = table.rows[i].cells[1].innerHTML;
+            if (jsonMasId.indexOf(Number.parseInt(idFriend)) != -1) {
+
+                table.rows[i].remove();
+                i--;
+            }
+        }
+    }
+
+    function updatingFields() {
+        var tableSize = $("#friendTable").find("tbody").find("tr").length;
+        $('#numberRecords').html("Количество избирателей: " + (tableSize));
+    }
 </script>

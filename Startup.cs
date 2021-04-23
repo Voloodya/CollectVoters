@@ -1,4 +1,5 @@
 using CollectVoters.Data;
+using Ical.Net.Interfaces.DataTypes;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VisioForge.MediaFramework.ONVIF;
 
 namespace CollectVoters
 {
@@ -37,6 +39,7 @@ namespace CollectVoters
             services.AddDbContext<Db_usersContext>();
 
             services.AddControllersWithViews();
+
             //Add
             services.Configure<IdentityOptions>(options =>
             {

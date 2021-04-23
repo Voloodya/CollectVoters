@@ -114,7 +114,5 @@ namespace CollectVoters.Models
         [ForeignKey(nameof(UserId))]
         [InverseProperty("Friends")]
         public virtual User User { get; set; }
-
-         
     }
 }
